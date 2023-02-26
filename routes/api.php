@@ -69,6 +69,32 @@ Route::prefix('clientes')->group(function () {
         Cliente::where('id', $request->id)->delete();
 
     });
+
+    Route::put('/editar', function(Request $request, Response $response){
+
+        $new_data = [];
+
+        if(!empty($request->nome) && strlen($request->nome)>0){
+            $new_data['nome'] = $request->nome;
+        }
+        if(!empty($request->cpf) && strlen($request->cpf)>0){
+            $new_data['cpf'] = $request->cpf;
+        }
+        if(!empty($request->sexo) && strlen($request->sexo)>0){
+            $new_data['sexo'] = $request->sexo;
+        }
+        if(!empty($request->localidade_id) && strlen($request->localidade_id)>0){
+            $new_data['localidade_id'] = $request->localidade_id;
+        }
+        if(!empty($request->data_nascimento) && strlen($request->data_nascimento)>0){
+            $new_data['data_nascimento'] = \DateTime::createFromFormat("d-m-Y",$request->data_nascimento);
+        }
+
+        Cliente::where('id', $request->id)
+        ->update($new_data);
+
+    });
+
 });
 
 Route::prefix('localidades')->group(function () {
