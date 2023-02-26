@@ -315,8 +315,8 @@
                     let html = ``
                     $("#table-lista-clientes").data("page", data.current_page)
                     data.data.forEach(function(cliente){
-                        
-                        html += template_row(cliente.id, cliente.nome,cliente.cpf,cliente.data_nascimento,cliente.localidade_id,cliente.localidade_id,cliente.sexo)
+                        console.log(cliente)
+                        html += template_row(cliente.id, cliente.nome,cliente.cpf,cliente.data_nascimento,cliente.cidade.estado.nome,cliente.cidade.nome,cliente.sexo)
                         
                     })
                     $('#lista-clientes').html(html)

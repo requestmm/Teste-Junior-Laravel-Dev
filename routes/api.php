@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('clientes')->group(function () {
     Route::get('/consultar', function (Request $request, Response $response) {
         $table_page = $request->table_page;
-        return Cliente::where(function($query) use ($request){
+        return Cliente::with('cidade.estado')->where(function($query) use ($request){
 
             if(!empty($request->nome) && strlen($request->nome)>0){
                 $query->where('nome', $request->nome);

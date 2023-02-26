@@ -17,5 +17,11 @@ class Cliente extends Model
     protected $fillable = ['nome', 'sexo', 'cpf', 'localidade_id', 'data_nascimento'];
     protected $dates = ['deleted_at'];
 
+    public function cidade(){
+        return $this->belongsTo(Cidade::class,'localidade_id');
+    }
+
+    
+
     
 }
