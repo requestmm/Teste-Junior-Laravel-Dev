@@ -279,7 +279,7 @@
                 </td>
                 <td>${nome}</td>
                 <td>${cpf}</td>
-                <td>${nascimento}</td>
+                <td>${nascimento.split("-").reverse().join("/")}</td>
                 <td>${estado}</td>
                 <td>${cidade}</td>
                 <td>${sexo}</td>
