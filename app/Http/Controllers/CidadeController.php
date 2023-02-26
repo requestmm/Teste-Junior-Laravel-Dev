@@ -17,6 +17,19 @@ class CidadeController extends Controller
         //
     }
 
+    public function apiCidades(Request $request)
+    {
+        $validated = $request->validate([
+            'estado_id' => 'required'
+        ]);
+
+        if(!$validated){
+            return Response::json(["sucesso"=>false, "Estado não encontrado."], 404);
+        }else{
+            return Cidade::where(["estado_id"=>$request->query('estado_id')])->get();
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
