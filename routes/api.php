@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('clientes')->group(function () {
     Route::get('/consultar', function (Request $request, Response $response) {
+        $table_page = $request->table_page;
         return Cliente::where(function($query) use ($request){
 
             if(!empty($request->nome) && strlen($request->nome)>0){
@@ -45,7 +46,7 @@ Route::prefix('clientes')->group(function () {
             if(!empty($request->data_nascimento) && strlen($request->data_nascimento)>0){
                 $query->where('data_nascimento', \DateTime::createFromFormat("d-m-Y",$request->data_nascimento));
             }
-        })->get();
+        })->simplePaginate(5,['*'],'page', $table_page);
     });
  
     Route::post('/cadastrar', function (Request $request, Response $response) {
@@ -77,7 +78,7 @@ Route::prefix('localidades')->group(function () {
  
     Route::get('/cidades-por-estado', function (Request $request, Response $response) {
 
-        $estado_id;
+        $estado_id = null;
 
         $validated = $request->validate([
             'estado_id' => 'required'

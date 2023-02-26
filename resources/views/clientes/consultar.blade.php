@@ -68,7 +68,13 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="" width="100%" cellspacing="0">
+                            <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link page-prev" href="javascript:void(0);">Anterior</a></li>
+                                <li class="page-item"><a class="page-link page-next" href="javascript:void(0);">Próxima</a></li>
+                            </ul>
+                            </nav>
+                                <table class="table table-bordered" id="table-lista-clientes" width="100%" cellspacing="0" data-page="1">
                                     <thead>
                                         <tr>
                                             <th>Opções</th>
@@ -283,19 +289,32 @@
 
 
         }
-
+        
         $(document).ready(function(){
-
-            function listarClientes(){
+            function listarClientes(pageAction = null){
+                
                 cpf = $("#cliente-cpf").val();
                 data_nascimento = $("#litepicker-data-nascimento").val();
                 localidade_id = $("#lista-cidades option:selected").val();
                 nome = $("#cliente-nome").val();
                 sexo = $(".cliente-sexo[name=cliente_sexo]:checked").val();
 
-                $.get("/api/clientes/consultar", {cpf, data_nascimento, localidade_id, nome, sexo}, function(data){
+                table_page = $("#table-lista-clientes").data("page")
+                
+                if(pageAction=="next"){
+                    table_page++;
+                }
+
+                if(pageAction=="prev"){
+                    table_page--;
+                }
+
+
+                $.get("/api/clientes/consultar", {page: table_page, cpf, data_nascimento, localidade_id, nome, sexo}, function(data){
+                    
                     let html = ``
-                    data.forEach(function(cliente){
+                    $("#table-lista-clientes").data("page", data.current_page)
+                    data.data.forEach(function(cliente){
                         
                         html += template_row(cliente.id, cliente.nome,cliente.cpf,cliente.data_nascimento,cliente.localidade_id,cliente.localidade_id,cliente.sexo)
                         
@@ -304,6 +323,9 @@
                 
                 })
             }
+
+            $('.page-prev').on("click", document, ()=>listarClientes('prev'))
+            $('.page-next').on("click", document, ()=>listarClientes('next'))
 
             listarClientes()
 
