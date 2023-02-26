@@ -4,6 +4,7 @@
 use App\Models\Estado;
 use App\Models\Cidade;
 use App\Models\Cliente;
+use App\Http\Controllers\ClienteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,73 +28,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('clientes')->group(function () {
-    Route::get('/consultar', function (Request $request, Response $response) {
-        $table_page = $request->table_page;
-        return Cliente::with('cidade.estado')->where(function($query) use ($request){
-
-            if(!empty($request->nome) && strlen($request->nome)>0){
-                $query->where('nome', $request->nome);
-            }
-            if(!empty($request->cpf) && strlen($request->cpf)>0){
-                $query->where('cpf', $request->cpf);
-            }
-            if(!empty($request->sexo) && strlen($request->sexo)>0){
-                $query->where('sexo', $request->sexo);
-            }
-            if(!empty($request->localidade_id) && strlen($request->localidade_id)>0){
-                $query->where('localidade_id', $request->localidade_id);
-            }
-            if(!empty($request->data_nascimento) && strlen($request->data_nascimento)>0){
-                $query->where('data_nascimento', \DateTime::createFromFormat("d-m-Y",$request->data_nascimento));
-            }
-        })->simplePaginate(5,['*'],'page', $table_page);
-    });
+    Route::get('/consultar',  [ClienteController::class, 'apiClientes']);
  
-    Route::post('/cadastrar', function (Request $request, Response $response) {
-        
-        Cliente::create([
-            'nome' => $request->nome,
-            'cpf' => $request->cpf,
-            'sexo' => $request->sexo,
-            'localidade_id' => $request->localidade_id,
-            'data_nascimento' => \DateTime::createFromFormat("d-m-Y",$request->data_nascimento)
-        ]);
+    Route::post('/cadastrar', [ClienteController::class, 'apiCreate']);
 
-        return "ok";
-    
-    });
+    Route::delete('/deletar', [ClienteController::class, 'apiDestroy']);
 
-    Route::delete('/deletar', function(Request $request, Response $response){
-
-
-        Cliente::where('id', $request->id)->delete();
-
-    });
-
-    Route::put('/editar', function(Request $request, Response $response){
-
-        $new_data = [];
-
-        if(!empty($request->nome) && strlen($request->nome)>0){
-            $new_data['nome'] = $request->nome;
-        }
-        if(!empty($request->cpf) && strlen($request->cpf)>0){
-            $new_data['cpf'] = $request->cpf;
-        }
-        if(!empty($request->sexo) && strlen($request->sexo)>0){
-            $new_data['sexo'] = $request->sexo;
-        }
-        if(!empty($request->localidade_id) && strlen($request->localidade_id)>0){
-            $new_data['localidade_id'] = $request->localidade_id;
-        }
-        if(!empty($request->data_nascimento) && strlen($request->data_nascimento)>0){
-            $new_data['data_nascimento'] = \DateTime::createFromFormat("d-m-Y",$request->data_nascimento);
-        }
-
-        Cliente::where('id', $request->id)
-        ->update($new_data);
-
-    });
+    Route::put('/editar', [ClienteController::class, 'apiUpdate']);
 
 });
 
